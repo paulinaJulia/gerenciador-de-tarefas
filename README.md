@@ -10,3 +10,6 @@ Curso: [Bacharel em Engenharia de Software](https://engsoftwarepaudosferros.ufer
 
 > Link da versão inicial do artigo:
 https://www.overleaf.com/read/qsqyjrwhmjkf#3e45ec
+
+> Link do Sonarcloud:
+https://sonarcloud.io/summary/overall?id=paulinaJulia_gerenciador-de-tarefas&branch=main
