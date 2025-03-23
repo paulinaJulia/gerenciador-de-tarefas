@@ -23,4 +23,3 @@ import ItemTask from './ItemTask.vue'
 const { tasks, concluir, removeTask } = inject('tasks')
 </script>
 
-<style lang="scss" scoped></style>
