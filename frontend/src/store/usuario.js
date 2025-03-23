@@ -42,6 +42,8 @@ export default function useUsuario() {
       usuarios.value.splice(index, 1, atualizado)
       console.log(atualizado)
       localStorage.setItem('usuarios', JSON.stringify([...usuarios.value]))
+      localStorage.setItem('userToken', 'meu-token-seguro')
+
       router.push('/')
     }
   }
@@ -52,6 +54,8 @@ export default function useUsuario() {
     usuarios.value = usuarios.value.map((usuario) => ({ ...usuario, logado: false }))
 
     localStorage.setItem('usuarios', JSON.stringify([...usuarios.value]))
+    localStorage.removeItem('userToken') // Remove o token
+
     router.push('/login')
   }
 

@@ -6,8 +6,8 @@
       <div class="w-[3.5rem] h-[3.5rem] bg-[url('../../public/Clipboard.png')]"></div>
     </div>
     <div>
-      <p>Você ainda não tem tarefas cadastradas</p>
-      <p>Crie tarefas e organize seus itens a fazer</p>
+      <p>Você ainda não tem itens cadastrados</p>
+      <p>Crie novas tarefas e hábitos e organize o seu dia!</p>
     </div>
   </div>
 </template>

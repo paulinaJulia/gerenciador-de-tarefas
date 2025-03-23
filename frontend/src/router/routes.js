@@ -10,6 +10,16 @@ const routes = [
     path: '/login',
     component: PageLogin,
   },
+  {
+    path: '/logout',
+    component: {
+      beforeRouteEnter(to, from, next) {
+        localStorage.removeItem('userToken')
+        next('/login')
+      },
+      render: () => null, // Não renderiza nada
+    },
+  },
 
   {
     path: '/cadastrar',

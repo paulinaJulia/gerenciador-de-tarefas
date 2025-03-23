@@ -16,5 +16,16 @@ export default defineRouter(function () {
     history: createHistory(process.env.VUE_ROUTER_BASE),
   })
 
+  Router.beforeEach((to, from, next) => {
+    const isAuth = localStorage.getItem('userToken') !== null
+
+    if (to.path === '/' && !isAuth) {
+      next('/login') // Redireciona para login se não estiver autenticado
+    } else {
+      next() // Prossegue normalmente
+    }
+  })
+
   return Router
 })
+
