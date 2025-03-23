@@ -97,8 +97,7 @@ const fecharModal = () => {
   modalCriarTask.value.state.modo = ''
 }
 const editar = (id) => {
-  // if (newTask.value.text === '') return
-  // debugger
+
   const tasksList = JSON.parse(localStorage.getItem('tasks')) || []
   const tasksListRemovedItem = tasksList.filter((item) => item.id !== id)
   console.log(tasksListRemovedItem, tasksList)
@@ -121,8 +120,7 @@ const editar = (id) => {
 }
 
 const criar = () => {
-  // if (newTask.value.text === '') return
-  // debugger
+
   const tasksList = JSON.parse(localStorage.getItem('tasks')) || []
   localStorage.setItem(
     'tasks',

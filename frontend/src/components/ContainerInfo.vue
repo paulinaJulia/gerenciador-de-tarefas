@@ -43,7 +43,7 @@ const concluidas = computed(() => {
 <style lang="css" scoped>
 .counter-text {
   color: var(--gray-200, #d9d9d9);
-  font-family: Inter;
+  font-family: Inter, sans-serif;
   font-size: 12px;
   font-style: normal;
   font-weight: 700;

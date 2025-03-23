@@ -35,4 +35,3 @@ defineProps({
 const emit = defineEmits(['click:criar'])
 </script>
 
-<style lang="scss" scoped></style>

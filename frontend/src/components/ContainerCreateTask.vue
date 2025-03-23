@@ -60,8 +60,9 @@ const handleClickEnter = () => {
   }
 }
 
-onMounted(() => [handleClickEnter()])
+onMounted(() => {
+  handleClickEnter()
+})
 provide('newTask', newTask)
 </script>
 
-<style lang="scss" scoped></style>

@@ -18,7 +18,7 @@
 p {
   color: #808080;
   text-align: center;
-  font-family: Inter;
+  font-family: Inter, sans-serif;
   font-size: 16px;
   font-style: normal;
   font-weight: 700;

@@ -13,4 +13,3 @@ const newTask = inject('newTask')
 console.log(newTask)
 </script>
 
-<style lang="scss" scoped></style>

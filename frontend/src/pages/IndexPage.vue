@@ -101,7 +101,6 @@ const tab = ref('tarefas')
     </div>
   </div>
   <ModalCriarTask />
-  <!-- <ModalVisualizarTask /> -->
 </template>
 
 <style scoped>
