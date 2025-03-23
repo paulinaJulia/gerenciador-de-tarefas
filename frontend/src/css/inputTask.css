@@ -1,0 +1,9 @@
+
+.input {
+  @apply bg-gray-500 flex-1 text-gray-100 border border-gray-700 flex justify-center p-16 gap-8 items-center rounded-lg;
+}
+
+.input:active,
+.input:focus {
+  @apply outline-none border-primar-dark;
+}

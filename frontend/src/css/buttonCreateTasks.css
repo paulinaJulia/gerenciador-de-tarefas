@@ -1,0 +1,8 @@
+
+.btn {
+  @apply bg-secondary-dark text-gray-100 flex justify-center p-16 gap-8 items-center rounded-lg sm:!w-full;
+}
+
+.btn:hover {
+  @apply bg-secondary;
+}
