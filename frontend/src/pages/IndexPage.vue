@@ -1,19 +1,28 @@
 <script setup>
-// import ContainerCreateTask from '../components/ContainerCreateTask.vue'
 import ListaTasks from '../components/ListaTasks.vue'
 import ModalCriarTask from '../components/ModalCriarTask.vue'
-// import ModalVisualizarTask from '../components/ModalVisualizarTask.vue'
+import ModalCriarHabito from '../components/ModalCriarHabito.vue'
 import ContainerInfo from '../components/ContainerInfo.vue'
 import ListaVazia from '../components/ListaVazia.vue'
 import { onMounted, ref, watch, provide } from 'vue'
 import useTasks from '../store/tarefas.js'
+import useHabitos from '../store/habitos.js'
+
 const tasks_criadas = ref(0)
 const tasks_concluidas = ref(0)
+const habitos_criados = ref(0)
+const habitos_concluidos = ref(0)
 
 const { tasks, task, getTasksLocalStorage, removeTask, concluir, addNewItemTasks } = useTasks()
+const { habitos, habito, getHabitosLocalStorage, removeHabito, concluirHabito, addNewItemHabitos } = useHabitos()
 
 const calcularConcluidas = () => {
   tasks_concluidas.value = tasks.value.filter((item) => item.concluida === true).length
+}
+
+
+const calcularHabitosConcluidos = () => {
+  habitos_concluidos.value = habitos.value.filter((item) => item.concluida === true).length
 }
 
 watch(
@@ -24,32 +33,55 @@ watch(
   },
   { deep: true },
 )
+
+watch(
+  () => [habitos.value],
+  () => {
+    habitos_criados.value = habitos.value.length
+    calcularHabitosConcluidos()
+  },
+  { deep: true },
+)
 const stateModalCriarTarefa = ref({ open: false })
+const stateModalCriarHabito = ref({ open: false })
 const openModal = () => {
+  console.log('aqq')
   stateModalCriarTarefa.value.open = true
 }
 const closeModal = () => {
   stateModalCriarTarefa.value.open = false
 }
 provide('tasks', { tasks, addNewItemTasks, getTasksLocalStorage, concluir, removeTask, task })
+provide('habitos', { habitos, habito, getHabitosLocalStorage, removeHabito, concluirHabito, addNewItemHabitos })
 provide('openModal', openModal)
 provide('closeModal', closeModal)
+
 const modalCriarTask = ref({
   state: stateModalCriarTarefa.value,
 })
 provide('modalCriarTask', modalCriarTask)
 
-const modalVisualizarTask = ref({
-  state: stateModalCriarTarefa.value,
+
+const modalCriarHabito = ref({
+  state: stateModalCriarHabito.value,
 })
-provide('modalVisualizarTask', modalVisualizarTask)
-const onClick = () => {
-  console.log('clicou')
+
+const openModalHabito = () => {
+  stateModalCriarHabito.value.open = true
 }
+const closeModalHabito = () => {
+  stateModalCriarHabito.value.open = false
+}
+provide('op_modal_habito', {closeModalHabito, openModalHabito})
+provide('modalCriarHabito', modalCriarHabito)
+
+
 onMounted(() => {
   getTasksLocalStorage()
+  getHabitosLocalStorage()
 
   tasks_criadas.value = tasks.value.length
+  habitos_criados.value =  habitos.value.length
 })
 
 const tab = ref('tarefas')
@@ -68,7 +100,7 @@ const tab = ref('tarefas')
         narrow-indicator
       >
         <q-tab name="tarefas" label="Tarefas" />
-        <q-tab name="alarms" label="Alarms" />
+        <q-tab name="habitos" label="Hábitos" />
         <q-tab name="movies" label="Movies" />
       </q-tabs>
 
@@ -77,13 +109,14 @@ const tab = ref('tarefas')
       <q-tab-panels v-model="tab" animated>
         <q-tab-panel name="tarefas">
           <ContainerInfo :tasks_concluidas="tasks_concluidas" :tasks_criadas="tasks_criadas" />
-          <ListaTasks v-if="tasks_criadas > 0" />
+          <ListaTasks v-if="tasks_criadas > 0" modal-type="tarefas"  :dados="tasks" :remover="removeTask" :concluir="concluir"  />
           <ListaVazia v-else />
         </q-tab-panel>
 
-        <q-tab-panel name="alarms">
-          <div class="text-h6">Alarms</div>
-          Lorem ipsum dolor sit amet consectetur adipisicing elit.
+        <q-tab-panel name="habitos">
+          <ContainerInfo :tasks_concluidas="habitos_concluidos" :tasks_criadas="habitos_criados" />
+          <ListaTasks v-if="habitos_criados > 0" modal-type="habitos" :dados="habitos" :remover="removeHabito" :concluir="concluirHabito" />
+          <ListaVazia v-else />
         </q-tab-panel>
 
         <q-tab-panel name="movies">
@@ -94,13 +127,14 @@ const tab = ref('tarefas')
 
       <q-page-sticky position="bottom-right" :offset="[40, 40]">
         <q-fab icon="add" direction="up" color="accent">
-          <q-fab-action @click="openModal" color="primary" icon="add_task" label="Criar tarefa" />
-          <q-fab-action @click="onClick" color="primary" icon="loop" label="Criar hábito" />
+          <q-fab-action @click="openModal()" color="primary" icon="add_task" label="Criar tarefa" />
+          <q-fab-action @click="openModalHabito()" color="primary" icon="loop" label="Criar hábito" />
         </q-fab>
       </q-page-sticky>
     </div>
   </div>
   <ModalCriarTask />
+  <ModalCriarHabito />
 </template>
 
 <style scoped>

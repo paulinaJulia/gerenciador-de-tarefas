@@ -53,13 +53,13 @@
           <q-list>
             <q-item clickable v-close-popup>
               <q-item-section>
-                <q-btn @click="() => openEditarTask(props.task.id)">Editar</q-btn>
+                <q-btn @click="() => openEdicao(props.task.id)">Editar</q-btn>
               </q-item-section>
             </q-item>
             <q-separator></q-separator>
             <q-item clickable v-close-popup>
               <q-item-section>
-                <q-btn @click="() => openvisualizarTask(props.task.id)">Visualizar</q-btn>
+                <q-btn @click="() => openVisualizacao(props.task.id)">Visualizar</q-btn>
               </q-item-section>
             </q-item>
           </q-list>
@@ -87,10 +87,13 @@
 
 <script setup>
 import useTasks from '../store/tarefas.js'
-const { getTaskLocalStorage, task: taskActive } = useTasks()
+import useHabitos from '../store/habitos.js'
+const { getTaskLocalStorage, task: taskActive, } = useTasks()
+const {getHabitoLocalStorage, habito: habitoActive} = useHabitos()
 import { inject } from 'vue'
 
 const modalCriarTask = inject('modalCriarTask')
+const modalCriarHabito = inject('modalCriarHabito')
 const openModal = inject('openModal')
 
 const props = defineProps({
@@ -98,6 +101,8 @@ const props = defineProps({
     type: Object,
     default: () => {},
   },
+   modalType: {type: String, default: ''}
+
 })
 
 const openEditarTask = async (id) => {
@@ -111,6 +116,39 @@ const openvisualizarTask = async (id) => {
   await getTaskLocalStorage(id)
   console.log(taskActive.value, 'active')
   modalCriarTask.value.state.modo = 'visualizar'
+  openModal()
+}
+
+
+const openEdicao = async (id) => {
+  if (props.modalType === 'tarefas') {
+  await openEditarTask(id)
+  } else {
+  await openEditarHabito(id)
+}
+}
+
+
+const openVisualizacao = async(id) => {
+    if (props.modalType === 'tarefas') {
+  await openvisualizarTask(id)
+  } else {
+  await openvisualizarHabito(id)
+}
+}
+
+
+const openEditarHabito = async (id) => {
+  await getHabitoLocalStorage(id)
+  console.log(habitoActive.value, 'active')
+  modalCriarHabito.value.state.modo = 'editar'
+  openModal()
+}
+
+const openvisualizarHabito = async (id) => {
+  await getHabitoLocalStorage(id)
+  console.log(habitoActive.value, 'active')
+  modalCriarHabito.value.state.modo = 'visualizar'
   openModal()
 }
 // const emit = defineEmits(['click:concluir', 'click:excluir'])

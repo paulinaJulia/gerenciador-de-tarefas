@@ -65,6 +65,7 @@ const visualizar = ref(false)
 const { addNewItemTasks, getTasksLocalStorage, task } = inject('tasks')
 // const { task } = useTasks()
 const modalCriarTask = inject('modalCriarTask')
+console.log(modalCriarTask)
 
 watch(
   () => modalCriarTask.value.state.open,
@@ -152,7 +153,6 @@ const submit = () => {
     criar()
   }
 }
-// const newTask = inject('newTask')
-// const emits = defineEmits(['criar:tarefa'])
+
 console.log(modalCriarTask.value)
 </script>

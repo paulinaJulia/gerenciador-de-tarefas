@@ -1,7 +1,7 @@
 <template>
   <div class="w-full pb-24 pt-52 sm:pb-12 flex gap-24 justify-between flex-wrap items-center">
     <div class="flex gap-8">
-      <span class="text-secondary font-bold text-sm">Tarefas Criadas</span>
+      <span class="text-secondary font-bold text-sm">Itens Criados</span>
       <span
         class="bg-gray-400 rounded-full flex py-2 px-8 flex-col justify-center items-center gap-10"
       >
@@ -9,7 +9,7 @@
       >
     </div>
     <div class="flex gap-8">
-      <span class="text-primary font-bold text-sm">Concluídas</span>
+      <span class="text-primary font-bold text-sm">Concluídos</span>
 
       <span
         class="bg-gray-400 rounded-full flex py-2 px-8 flex-col justify-center items-center gap-10"
