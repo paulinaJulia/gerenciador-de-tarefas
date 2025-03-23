@@ -3,12 +3,28 @@ import { ref } from 'vue'
 const habito = ref({})
 export default function useHabitos() {
   const habitos = ref([])
+  const habitosDoDia = ref([])
+
+  const getHabitosDoDia = () => {
+    const hoje = new Date()
+
+    const diaSemana = hoje.toLocaleDateString('pt-BR', { weekday: 'short' }).toLowerCase() // seg, ter, qua...
+    const diaMes = hoje.getDate() // Número do dia no mês (1 a 31)
+    getHabitosLocalStorage()
+    habitosDoDia.value = habitos.value.filter((habito) => {
+      if (habito.frequencia === 'diario') return true // Exibir todos os dias
+      if (habito.frequencia === 'semanal') return habito.diasSemana.includes(diaSemana)
+      if (habito.frequencia === 'mensal') return habito.diaMes === diaMes
+      return false
+    })
+  }
   const getHabitosLocalStorage = () => {
     const habitosList = localStorage.getItem('habitos') || []
     if (habitosList.length === 0) {
       habitos.value = []
       return
     }
+
     habitos.value = JSON.parse(habitosList)
   }
   const getHabitoLocalStorage = (id) => {
@@ -33,9 +49,20 @@ export default function useHabitos() {
   const concluirHabito = (task) => {
     const index = habitos.value.findIndex((item) => item.id === task.id)
     if (index >= 0) {
-      habitos.value.splice(index, 1, task)
+      const hoje = new Date().toISOString().split('T')[0] // Formato YYYY-MM-DD
+      const atualizado = { ...habitos.value[index] }
+
+      if (!atualizado.concluida) {
+        atualizado.concluida = {}
+      }
+
+      // Alterna o status do hábito para o dia atual
+      atualizado.concluida[hoje] = !atualizado.concluida[hoje]
+
+      habitos.value.splice(index, 1, atualizado)
+      console.log(atualizado)
+      localStorage.setItem('habitos', JSON.stringify([...habitos.value]))
     }
-    localStorage.setItem('habitos', JSON.stringify([...habitos.value]))
   }
 
   const addNewItemHabitos = (obj) => {
@@ -46,8 +73,10 @@ export default function useHabitos() {
     getHabitosLocalStorage,
     habitos,
     habito,
+    habitosDoDia,
     removeHabito,
     concluirHabito,
+    getHabitosDoDia,
     addNewItemHabitos,
     getHabitoLocalStorage,
   }

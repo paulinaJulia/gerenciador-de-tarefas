@@ -14,7 +14,7 @@ const habitos_criados = ref(0)
 const habitos_concluidos = ref(0)
 
 const { tasks, task, getTasksLocalStorage, removeTask, concluir, addNewItemTasks } = useTasks()
-const { habitos, habito, getHabitosLocalStorage, removeHabito, concluirHabito, addNewItemHabitos } = useHabitos()
+const { habitos, habito,getHabitosDoDia, habitosDoDia, getHabitosLocalStorage, removeHabito, concluirHabito, addNewItemHabitos } = useHabitos()
 
 const calcularConcluidas = () => {
   tasks_concluidas.value = tasks.value.filter((item) => item.concluida === true).length
@@ -78,7 +78,7 @@ provide('modalCriarHabito', modalCriarHabito)
 
 onMounted(() => {
   getTasksLocalStorage()
-  getHabitosLocalStorage()
+  getHabitosDoDia()
 
   tasks_criadas.value = tasks.value.length
   habitos_criados.value =  habitos.value.length
@@ -113,9 +113,10 @@ const tab = ref('tarefas')
           <ListaVazia v-else />
         </q-tab-panel>
 
-        <q-tab-panel name="habitos">
+        <q-tab-panel name="habitos" class="">
+          <div class="pb-24">Hábitos de hoje</div>
           <ContainerInfo :tasks_concluidas="habitos_concluidos" :tasks_criadas="habitos_criados" />
-          <ListaTasks v-if="habitos_criados > 0" modal-type="habitos" :dados="habitos" :remover="removeHabito" :concluir="concluirHabito" />
+          <ListaTasks v-if="habitos_criados > 0" modal-type="habitos" :dados="habitosDoDia" :remover="removeHabito" :concluir="concluirHabito" />
           <ListaVazia v-else />
         </q-tab-panel>
 

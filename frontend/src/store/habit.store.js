@@ -4,11 +4,11 @@ const newHabit = ref({
   id: '',
   titulo: '',
   descricao: '',
-  frequencia: '',
+  frequencia: 'diario',
   data_criacao: '',
   user_id: '',
   status: '',
-  conluida: false,
+  conluida: {},
 })
 
 export { newHabit }

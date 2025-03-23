@@ -1,5 +1,5 @@
 <template>
-  <div class="w-full pb-24 pt-52 sm:pb-12 flex gap-24 justify-between flex-wrap items-center">
+  <div class="w-full pb-24  sm:pb-12 flex gap-24 justify-between flex-wrap items-center">
     <div class="flex gap-8">
       <span class="text-secondary font-bold text-sm">Itens Criados</span>
       <span

@@ -18,16 +18,8 @@
             type="textarea"
             label="Descrição"
           />
-          <q-input
-            :disable="visualizar"
-            filled
-            v-model="newHabit.prazo"
-            mask="date"
-            :rules="['date']"
-            label="Prazo"
-          >
-            <q-select v-model="newHabit.frequencia" :options="options" label="Frequância" />
-          </q-input>
+
+          <q-select emit-value map-options v-model="newHabit.frequencia" :options="options" label="Frequência" />
         </q-card-section>
 
         <q-card-actions align="right" class="text-primary">
@@ -55,7 +47,7 @@ const visualizar = ref(false)
 const { addNewItemHabitos, getHabitosLocalStorage, habito } = inject('habitos')
 // const { task } = useTasks()
 const modalCriarHabito = inject('modalCriarHabito')
-const options = ref([{ value: 'semanal', label: 'Semanal' }])
+const options = ref([{ value: 'diario', label: 'Diário' },{ value: 'semanal', label: 'Semanal' }, { value: 'mensal', label: 'Mensal' }])
 watch(
   () => modalCriarHabito.value.state.open,
   (v) => {
@@ -118,7 +110,10 @@ const criar = () => {
         id: habitosList[habitosList.length - 1]?.id + 1 || 1,
         descricao: newHabit.value.descricao,
         titulo: newHabit.value.titulo,
-        concluida: newHabit.value.conluida,
+        diasSemana: newHabit.value.frequencia === 'semanal' ? ['seg.', 'ter.', 'qua.','qui.', 'sex.', 'sab.', 'dom.'] : null,
+        diaMes: newHabit.value.frequencia === 'mensal' ? 15 : null,
+        concluida: {},
+        frequencia: newHabit.value.frequencia
       },
     ]),
   )
@@ -127,10 +122,19 @@ const criar = () => {
     id: habitosList[habitosList.length - 1]?.id + 1 || 1,
     descricao: newHabit.value.descricao,
     titulo: newHabit.value.titulo,
-
-    concluida: newHabit.value.conluida,
+    diasSemana: newHabit.value.frequencia === 'semanal' ? ['seg.', 'ter.', 'qua.','qui.', 'sex.', 'sab.', 'dom.'] : null,
+    diaMes: newHabit.value.frequencia === 'mensal' ? 15 : null,
+    concluida: {},
+    frequencia: newHabit.value.frequencia
   })
-  newHabit.value = { id: '', text: '', conluida: false }
+  newHabit.value = {   id: '',
+  titulo: '',
+  descricao: '',
+  frequencia: '',
+  data_criacao: '',
+  user_id: '',
+  status: '',
+  conluida: {}, }
 }
 
 const submit = () => {

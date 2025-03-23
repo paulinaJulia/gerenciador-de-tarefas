@@ -1,9 +1,9 @@
 <template>
   <div class="itemTask">
-    <input type="radio" v-show="false" :checked="props.task.concluida" />
+    <input type="radio" v-show="false" :checked="isConcluido(props.task.concluida)" />
     <button @click="$emit('click:concluir')" class="cursor-pointer">
       <svg
-        v-show="!props.task.concluida"
+        v-show="!isConcluido(props.task.concluida)"
         xmlns="http://www.w3.org/2000/svg"
         width="24"
         height="24"
@@ -17,7 +17,7 @@
       </svg>
       <svg
         xmlns="http://www.w3.org/2000/svg"
-        v-show="props.task.concluida"
+        v-show="isConcluido(props.task.concluida)"
         width="24"
         height="24"
         viewBox="0 0 24 24"
@@ -42,7 +42,7 @@
 
     <div
       class="w-[630px] md:!w-full p-16 flex flex-wrap break-words"
-      :class="props.task.concluida ? 'line-through' : ''"
+      :class="isConcluido(props.task.concluida) ? 'line-through' : ''"
     >
       <slot name="texto">Texto base</slot>
     </div>
@@ -95,8 +95,8 @@ import { inject } from 'vue'
 const modalCriarTask = inject('modalCriarTask')
 const modalCriarHabito = inject('modalCriarHabito')
 const openModal = inject('openModal')
-
-const props = defineProps({
+const  { openModalHabito} = inject('op_modal_habito')
+ const props = defineProps({
   task: {
     type: Object,
     default: () => {},
@@ -137,19 +137,27 @@ const openVisualizacao = async(id) => {
 }
 }
 
+const isConcluido = (concluida) => {
+  if (props.modalType === 'habitos') {
+          const hoje = new Date().toISOString().split('T')[0] // Formato YYYY-MM-DD
+     return concluida[hoje]
+  }
+  return concluida
+}
+
 
 const openEditarHabito = async (id) => {
   await getHabitoLocalStorage(id)
   console.log(habitoActive.value, 'active')
   modalCriarHabito.value.state.modo = 'editar'
-  openModal()
+  openModalHabito()
 }
 
 const openvisualizarHabito = async (id) => {
   await getHabitoLocalStorage(id)
   console.log(habitoActive.value, 'active')
   modalCriarHabito.value.state.modo = 'visualizar'
-  openModal()
+  openModalHabito()
 }
 // const emit = defineEmits(['click:concluir', 'click:excluir'])
 </script>
