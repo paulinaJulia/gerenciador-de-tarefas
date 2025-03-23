@@ -8,7 +8,7 @@ export default defineRouter(function () {
   const typeHistory =
     process.env.VUE_ROUTER_MODE === 'history' ? createWebHistory : createWebHashHistory
   const createHistory = process.env.SERVER ? createMemoryHistory : typeHistory
-
+  console.log({ routes })
   const Router = createRouter({
     scrollBehavior: () => ({ left: 0, top: 0 }),
     routes,
