@@ -97,6 +97,7 @@ provide('modalCriarHabito', modalCriarHabito)
 onMounted(() => {
   getTasksLocalStorage()
   getHabitosDoDia()
+  getHabitosLocalStorage()
 
   tasks_criadas.value = tasks.value.length
   habitos_criados.value = habitos.value.length
@@ -105,32 +106,15 @@ onMounted(() => {
 const tab = ref('tarefas')
 
 const columns = [
-  { name: 'calories', align: 'center', label: 'Calories', field: 'calories', sortable: true },
-  { name: 'fat', label: 'Fat (g)', field: 'fat', sortable: true },
-  { name: 'carbs', label: 'Carbs (g)', field: 'carbs' },
-  { name: 'protein', label: 'Protein (g)', field: 'protein' },
-  { name: 'sodium', label: 'Sodium (mg)', field: 'sodium' },
-  {
-    name: 'calcium',
-    label: 'Calcium (%)',
-    field: 'calcium',
-    sortable: true,
-    sort: (a, b) => parseInt(a, 10) - parseInt(b, 10),
-  },
-  {
-    name: 'iron',
-    label: 'Iron (%)',
-    field: 'iron',
-    sortable: true,
-    sort: (a, b) => parseInt(a, 10) - parseInt(b, 10),
-  },
+  { name: 'titulo', align: 'center', label: 'Hábito', field: 'titulo', sortable: true },
+  { name: 'concluida', label: 'Dias concluidos', field: 'concluida', sortable: true },
 ]
-const rowsHabitos = habitos.value.map((habito) => {
-  return {
-    ...habito,
-  }
-})
 
+const formatValues = (col) => {
+  if (col.name !== 'concluida') return [col.value] // Retorna um array para manter a consistência
+
+  return Object.keys(col?.value) || []
+}
 </script>
 
 <template>
@@ -180,43 +164,42 @@ const rowsHabitos = habitos.value.map((habito) => {
 
         <q-tab-panel name="relatorios">
           <div class="text-h6">Relatórios</div>
-          <div>
-            <p>Tarefas</p>
-            <q-circular-progress
-              show-value
-              font-size="12px"
-              :value="calcularPorcentagem()"
-              size="50px"
-              :thickness="0.22"
-              color="teal"
-              track-color="grey-3"
-              class="q-ma-md"
-            >
-              {{ calcularPorcentagem() + '%' }}
-            </q-circular-progress>
+          <div class="w-full flex gap-20 items-center">
+            <div class="flex flex-col gap-4">
+              <q-card class="p-20 ">
+                <p>Total de Tarefas</p>
+                <span class="font-semibold text-2xl">{{ tasks_criadas }}</span>
+              </q-card>
+            </div>
+
+             <div class="flex flex-col gap-4">
+              <q-card class="p-20 ">
+                <p>Total de Hábitos</p>
+                <span class="font-semibold text-2xl">{{ habitos.length }}</span>
+              </q-card>
+            </div>
+            <div class="flex flex-col gap-4">
+              <p>Tarefas Concluídas</p>
+              <q-circular-progress
+                show-value
+                font-size="12px"
+                :value="calcularPorcentagem()"
+                size="50px"
+                :thickness="0.22"
+                color="teal"
+                track-color="grey-3"
+                class="q-ma-md"
+              >
+                {{ calcularPorcentagem() + '%' }}
+              </q-circular-progress>
+            </div>
           </div>
-          <div>
-            <q-table
-              title="Treats"
-              :rows="rowsHabitos"
-              :columns="columns"
-              row-key="name"
-              grid
-              hide-header
-            >
+          <div class="flex gap-12 flex-col">
+            <p>Hábitos</p>
+            <q-table :rows="habitos" :columns="columns" row-key="name" grid hide-header>
               <template v-slot:item="props">
-                <div
-                  class="q-pa-xs col-xs-12 col-sm-6 col-md-4 col-lg-3 grid-style-transition"
-                  :style="props.selected ? 'transform: scale(0.95);' : ''"
-                >
-                  <q-card
-                    bordered
-                    flat
-                    :class="props.selected ? ($q.dark.isActive ? 'bg-grey-9' : 'bg-grey-2') : ''"
-                  >
-                    <q-card-section>
-                      <div>{{ props.row.name }}</div>
-                    </q-card-section>
+                <div class="q-pa-xs col-xs-12 col-sm-6 col-md-4 col-lg-3 grid-style-transition">
+                  <q-card bordered flat>
                     <q-separator />
                     <q-list dense>
                       <q-item
@@ -227,7 +210,13 @@ const rowsHabitos = habitos.value.map((habito) => {
                           <q-item-label>{{ col.label }}</q-item-label>
                         </q-item-section>
                         <q-item-section side>
-                          <q-item-label caption>{{ col.value }}</q-item-label>
+                          <q-item-label
+                            caption
+                            v-for="(item, index) in formatValues(col)"
+                            :key="index"
+                          >
+                            {{ item }}
+                          </q-item-label>
                         </q-item-section>
                       </q-item>
                     </q-list>
