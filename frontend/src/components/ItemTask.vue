@@ -1,9 +1,9 @@
 <template>
   <div class="itemTask">
-    <input type="radio" v-show="false" :checked="props.task.concluida" />
+    <input type="radio" v-show="false" :checked="isConcluido" />
     <button @click="$emit('click:concluir')" class="cursor-pointer">
       <svg
-        v-show="!props.task.concluida"
+        v-show="!isConcluido"
         xmlns="http://www.w3.org/2000/svg"
         width="24"
         height="24"
@@ -17,7 +17,7 @@
       </svg>
       <svg
         xmlns="http://www.w3.org/2000/svg"
-        v-show="props.task.concluida"
+        v-show="isConcluido"
         width="24"
         height="24"
         viewBox="0 0 24 24"
@@ -42,7 +42,7 @@
 
     <div
       class="w-[630px] md:!w-full p-16 flex flex-wrap break-words"
-      :class="props.task.concluida ? 'line-through' : ''"
+      :class="isConcluido ? 'line-through' : ''"
     >
       <slot name="texto">Texto base</slot>
     </div>
@@ -53,13 +53,13 @@
           <q-list>
             <q-item clickable v-close-popup>
               <q-item-section>
-                <q-btn @click="() => openEditarTask(props.task.id)">Editar</q-btn>
+                <q-btn @click="() => openEdicao(props.task.id)">Editar</q-btn>
               </q-item-section>
             </q-item>
             <q-separator></q-separator>
             <q-item clickable v-close-popup>
               <q-item-section>
-                <q-btn @click="() => openvisualizarTask(props.task.id)">Visualizar</q-btn>
+                <q-btn @click="() => openVisualizacao(props.task.id)">Visualizar</q-btn>
               </q-item-section>
             </q-item>
           </q-list>
@@ -87,17 +87,22 @@
 
 <script setup>
 import useTasks from '../store/tarefas.js'
-const { getTaskLocalStorage, task: taskActive } = useTasks()
-import { inject } from 'vue'
+import useHabitos from '../store/habitos.js'
+const { getTaskLocalStorage, task: taskActive, } = useTasks()
+const {getHabitoLocalStorage, habito: habitoActive} = useHabitos()
+import { inject, computed } from 'vue'
 
 const modalCriarTask = inject('modalCriarTask')
+const modalCriarHabito = inject('modalCriarHabito')
 const openModal = inject('openModal')
-
-const props = defineProps({
+const  { openModalHabito} = inject('op_modal_habito')
+ const props = defineProps({
   task: {
     type: Object,
     default: () => {},
   },
+   modalType: {type: String, default: ''}
+
 })
 
 const openEditarTask = async (id) => {
@@ -112,6 +117,49 @@ const openvisualizarTask = async (id) => {
   console.log(taskActive.value, 'active')
   modalCriarTask.value.state.modo = 'visualizar'
   openModal()
+}
+
+
+const openEdicao = async (id) => {
+  if (props.modalType === 'tarefas') {
+  await openEditarTask(id)
+  } else {
+  await openEditarHabito(id)
+}
+}
+
+
+const openVisualizacao = async(id) => {
+    if (props.modalType === 'tarefas') {
+  await openvisualizarTask(id)
+  } else {
+  await openvisualizarHabito(id)
+}
+}
+
+
+const isConcluido = computed(() => {
+  if (props.modalType === 'habitos') {
+   const hoje = new Date().toISOString().split('T')[0] // Formato YYYY-MM-DD
+    console.log(props.task.concluida, hoje)
+     return props.task?.concluida[hoje]
+  }
+  return props.task.concluida
+})
+
+
+const openEditarHabito = async (id) => {
+  await getHabitoLocalStorage(id)
+  console.log(habitoActive.value, 'active')
+  modalCriarHabito.value.state.modo = 'editar'
+  openModalHabito()
+}
+
+const openvisualizarHabito = async (id) => {
+  await getHabitoLocalStorage(id)
+  console.log(habitoActive.value, 'active')
+  modalCriarHabito.value.state.modo = 'visualizar'
+  openModalHabito()
 }
 // const emit = defineEmits(['click:concluir', 'click:excluir'])
 </script>

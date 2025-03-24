@@ -1,25 +1,31 @@
 <template>
   <div
-    class="flex pr-4 flex-col gap-12 overflow-y-auto overflow-x-hidden max-h-[300px] sm:max-h-[250px] sm:mb-40"
+    class=" pr-4  w-full  !overflow-y-auto overflow-hidden max-h-[400px] sm:max-h-[400px] sm:mb-40"
   >
     <ItemTask
-      v-for="task in tasks"
-      :key="task.id"
-      :task="task"
-      @click:excluir="removeTask(task)"
-      @click:concluir="concluir({ ...task, concluida: !task.concluida })"
+      v-for="dado in dados"
+      class="mt-8"
+      :key="dado.id"
+      :task="dado"
+      @click:excluir="remover(dado)"
+      @click:concluir="concluir({ ...dado, concluida: !dado.concluida })"
+    :modal-type="modalType"
     >
       <template #texto>
-        {{ task.titulo }}
+        {{ dado.titulo }}
       </template>
     </ItemTask>
   </div>
 </template>
 
 <script setup>
-import { inject } from 'vue'
 import ItemTask from './ItemTask.vue'
 
-const { tasks, concluir, removeTask } = inject('tasks')
+const {dados, remover, concluir, modalType} = defineProps({
+  dados: { type: Object, default: () => { } },
+  remover: {type: Function, default: () => {}},
+  concluir: { type: Function, default: () => { } },
+  modalType: {type: String, default: ''}
+})
 </script>
 

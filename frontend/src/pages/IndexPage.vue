@@ -1,19 +1,38 @@
 <script setup>
-// import ContainerCreateTask from '../components/ContainerCreateTask.vue'
 import ListaTasks from '../components/ListaTasks.vue'
 import ModalCriarTask from '../components/ModalCriarTask.vue'
-// import ModalVisualizarTask from '../components/ModalVisualizarTask.vue'
+import ModalCriarHabito from '../components/ModalCriarHabito.vue'
 import ContainerInfo from '../components/ContainerInfo.vue'
 import ListaVazia from '../components/ListaVazia.vue'
 import { onMounted, ref, watch, provide } from 'vue'
 import useTasks from '../store/tarefas.js'
+import useHabitos from '../store/habitos.js'
+
 const tasks_criadas = ref(0)
 const tasks_concluidas = ref(0)
+const habitos_criados = ref(0)
+const habitos_concluidos = ref(0)
 
 const { tasks, task, getTasksLocalStorage, removeTask, concluir, addNewItemTasks } = useTasks()
+const {
+  habitos,
+  habito,
+  getHabitosDoDia,
+  habitosDoDia,
+  getHabitosLocalStorage,
+  removeHabito,
+  concluirHabito,
+  addNewItemHabitos,
+} = useHabitos()
 
 const calcularConcluidas = () => {
   tasks_concluidas.value = tasks.value.filter((item) => item.concluida === true).length
+}
+
+const calcularHabitosConcluidos = () => {
+  const hoje = new Date().toISOString().split('T')[0] // Formato YYYY-MM-DD
+
+  habitos_concluidos.value = habitosDoDia.value.filter((item) => item.concluida[hoje] === true).length
 }
 
 watch(
@@ -24,35 +43,82 @@ watch(
   },
   { deep: true },
 )
+
+watch(
+  () => [habitos.value, habitosDoDia],
+  () => {
+    habitos_criados.value = habitosDoDia.value.length
+    calcularHabitosConcluidos()
+  },
+  { deep: true },
+)
 const stateModalCriarTarefa = ref({ open: false })
+const stateModalCriarHabito = ref({ open: false })
 const openModal = () => {
+  console.log('aqq')
   stateModalCriarTarefa.value.open = true
 }
 const closeModal = () => {
   stateModalCriarTarefa.value.open = false
 }
 provide('tasks', { tasks, addNewItemTasks, getTasksLocalStorage, concluir, removeTask, task })
+provide('habitos', {
+  habitos,
+  habitosDoDia,
+  habito,
+  getHabitosLocalStorage,
+  removeHabito,
+  getHabitosDoDia,
+  concluirHabito,
+  addNewItemHabitos,
+})
 provide('openModal', openModal)
 provide('closeModal', closeModal)
+
+const calcularPorcentagem = () => {
+  if (tasks_concluidas.value === 0) return 0
+  const porc = (100 * tasks_concluidas.value) / tasks.value.length
+  return porc
+}
 const modalCriarTask = ref({
   state: stateModalCriarTarefa.value,
 })
 provide('modalCriarTask', modalCriarTask)
 
-const modalVisualizarTask = ref({
-  state: stateModalCriarTarefa.value,
+const modalCriarHabito = ref({
+  state: stateModalCriarHabito.value,
 })
-provide('modalVisualizarTask', modalVisualizarTask)
-const onClick = () => {
-  console.log('clicou')
+
+const openModalHabito = () => {
+  stateModalCriarHabito.value.open = true
 }
+const closeModalHabito = () => {
+  stateModalCriarHabito.value.open = false
+}
+provide('op_modal_habito', { closeModalHabito, openModalHabito })
+provide('modalCriarHabito', modalCriarHabito)
+
 onMounted(() => {
   getTasksLocalStorage()
+  getHabitosDoDia()
+  getHabitosLocalStorage()
 
   tasks_criadas.value = tasks.value.length
+  habitos_criados.value = habitos.value.length
 })
 
 const tab = ref('tarefas')
+
+const columns = [
+  { name: 'titulo', align: 'center', label: 'Hábito', field: 'titulo', sortable: true },
+  { name: 'concluida', label: 'Dias concluidos', field: 'concluida', sortable: true },
+]
+
+const formatValues = (col) => {
+  if (col.name !== 'concluida') return [col.value] // Retorna um array para manter a consistência
+
+  return Object.keys(col?.value) || []
+}
 </script>
 
 <template>
@@ -68,8 +134,8 @@ const tab = ref('tarefas')
         narrow-indicator
       >
         <q-tab name="tarefas" label="Tarefas" />
-        <q-tab name="alarms" label="Alarms" />
-        <q-tab name="movies" label="Movies" />
+        <q-tab name="habitos" label="Hábitos" />
+        <q-tab name="relatorios" label="Relatórios" />
       </q-tabs>
 
       <q-separator />
@@ -77,30 +143,110 @@ const tab = ref('tarefas')
       <q-tab-panels v-model="tab" animated>
         <q-tab-panel name="tarefas">
           <ContainerInfo :tasks_concluidas="tasks_concluidas" :tasks_criadas="tasks_criadas" />
-          <ListaTasks v-if="tasks_criadas > 0" />
+          <ListaTasks
+            v-if="tasks_criadas > 0"
+            modal-type="tarefas"
+            :dados="tasks"
+            :remover="removeTask"
+            :concluir="concluir"
+          />
           <ListaVazia v-else />
         </q-tab-panel>
 
-        <q-tab-panel name="alarms">
-          <div class="text-h6">Alarms</div>
-          Lorem ipsum dolor sit amet consectetur adipisicing elit.
+        <q-tab-panel name="habitos" class="">
+          <div class="pb-24">Hábitos de hoje</div>
+          <ContainerInfo :tasks_concluidas="habitos_concluidos" :tasks_criadas="habitos_criados" />
+          <ListaTasks
+            v-if="habitos_criados > 0"
+            modal-type="habitos"
+            :dados="habitosDoDia"
+            :remover="removeHabito"
+            :concluir="concluirHabito"
+          />
+          <ListaVazia v-else />
         </q-tab-panel>
 
-        <q-tab-panel name="movies">
-          <div class="text-h6">Movies</div>
-          Lorem ipsum dolor sit amet consectetur adipisicing elit.
+        <q-tab-panel name="relatorios">
+          <div class="text-h6">Relatórios</div>
+          <div class="w-full flex gap-20 items-center">
+            <div class="flex flex-col gap-4">
+              <q-card class="p-20 ">
+                <p>Total de Tarefas</p>
+                <span class="font-semibold text-2xl">{{ tasks_criadas }}</span>
+              </q-card>
+            </div>
+
+             <div class="flex flex-col gap-4">
+              <q-card class="p-20 ">
+                <p>Total de Hábitos</p>
+                <span class="font-semibold text-2xl">{{ habitos.length }}</span>
+              </q-card>
+            </div>
+            <div class="flex flex-col gap-4">
+              <p>Tarefas Concluídas</p>
+              <q-circular-progress
+                show-value
+                font-size="12px"
+                :value="calcularPorcentagem()"
+                size="50px"
+                :thickness="0.22"
+                color="teal"
+                track-color="grey-3"
+                class="q-ma-md"
+              >
+                {{ calcularPorcentagem() + '%' }}
+              </q-circular-progress>
+            </div>
+          </div>
+          <div class="flex gap-12 flex-col">
+            <p>Hábitos</p>
+            <q-table :rows="habitos" :columns="columns" row-key="name" grid hide-header>
+              <template v-slot:item="props">
+                <div class="q-pa-xs col-xs-12 col-sm-6 col-md-4 col-lg-3 grid-style-transition">
+                  <q-card bordered flat>
+                    <q-separator />
+                    <q-list dense>
+                      <q-item
+                        v-for="col in props.cols.filter((col) => col.name !== 'desc')"
+                        :key="col.name"
+                      >
+                        <q-item-section>
+                          <q-item-label>{{ col.label }}</q-item-label>
+                        </q-item-section>
+                        <q-item-section side>
+                          <q-item-label
+                            caption
+                            v-for="(item, index) in formatValues(col)"
+                            :key="index"
+                          >
+                            {{ item }}
+                          </q-item-label>
+                        </q-item-section>
+                      </q-item>
+                    </q-list>
+                  </q-card>
+                </div>
+              </template>
+            </q-table>
+          </div>
         </q-tab-panel>
       </q-tab-panels>
 
       <q-page-sticky position="bottom-right" :offset="[40, 40]">
         <q-fab icon="add" direction="up" color="accent">
-          <q-fab-action @click="openModal" color="primary" icon="add_task" label="Criar tarefa" />
-          <q-fab-action @click="onClick" color="primary" icon="loop" label="Criar hábito" />
+          <q-fab-action @click="openModal()" color="primary" icon="add_task" label="Criar tarefa" />
+          <q-fab-action
+            @click="openModalHabito()"
+            color="primary"
+            icon="loop"
+            label="Criar hábito"
+          />
         </q-fab>
       </q-page-sticky>
     </div>
   </div>
   <ModalCriarTask />
+  <ModalCriarHabito />
 </template>
 
 <style scoped>
@@ -109,7 +255,7 @@ const tab = ref('tarefas')
 /* Firefox */
 * {
   scrollbar-width: thin;
-  scrollbar-color: #d9d9d9 #8284fa;
+  scrollbar-color: #d9d9d9 #fff;
 }
 
 /* Chrome, Edge, and Safari */

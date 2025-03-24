@@ -58,20 +58,23 @@
 <script setup>
 import { inject, watch, ref } from 'vue'
 import { newTask } from '../store/task.store.js'
-// import useTasks from '../store/tarefas.js'
+import useUsuario from '../store/usuario.js'
+
 
 const edit = ref(false)
 const visualizar = ref(false)
+
+const {usuario} = useUsuario()
+
 const { addNewItemTasks, getTasksLocalStorage, task } = inject('tasks')
-// const { task } = useTasks()
 const modalCriarTask = inject('modalCriarTask')
+
+
 
 watch(
   () => modalCriarTask.value.state.open,
   (v) => {
-    console.log('mudou', modalCriarTask.value.state.modo)
     if (v) {
-      // debugger
       if (modalCriarTask.value.state?.modo === 'editar') {
         edit.value = true
         visualizar.value = false
@@ -131,6 +134,7 @@ const criar = () => {
         descricao: newTask.value.descricao,
         titulo: newTask.value.titulo,
         concluida: newTask.value.conluida,
+        user_id: usuario.value.id
       },
     ]),
   )
@@ -139,7 +143,7 @@ const criar = () => {
     id: tasksList[tasksList.length - 1]?.id + 1 || 1,
     descricao: newTask.value.descricao,
     titulo: newTask.value.titulo,
-
+    user_id: usuario.value.id,
     concluida: newTask.value.conluida,
   })
   newTask.value = { id: '', text: '', conluida: false }
@@ -152,7 +156,6 @@ const submit = () => {
     criar()
   }
 }
-// const newTask = inject('newTask')
-// const emits = defineEmits(['criar:tarefa'])
+
 console.log(modalCriarTask.value)
 </script>
