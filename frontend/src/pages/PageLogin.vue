@@ -11,14 +11,16 @@
 
       <q-input filled type="password" v-model="model.senha" label="Senha *" lazy-rules />
 
-      <div>
+      <div class="w-full flex justify-between">
+          <a href="/cadastrar" class="underline text-primary"> Cadastre-se</a>
+
+
         <q-btn
-          label="Submit"
+          label="Entrar"
           type="button"
           @click="() => login(model.email, model.senha)"
           color="primary"
         />
-        <q-btn label="Reset" type="reset" color="primary" flat class="q-ml-sm" />
       </div>
     </q-form>
   </div>

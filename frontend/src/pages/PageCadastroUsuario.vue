@@ -1,12 +1,12 @@
 <template>
   <div class="flex flex-col p-24">
-    <q-form @submit="onSubmit" @reset="onReset" class="flex flex-col gap-16">
+    <q-form class="flex flex-col gap-16">
       <q-input
         filled
         v-model="model.email"
         label="Email *"
         lazy-rules
-        :rules="[(val) => (val && val.length > 0) || 'Please type something']"
+        :rules="[(val) => (val && val.length > 0) || 'Campo obrigatório']"
       />
 
       <q-input
@@ -14,14 +14,14 @@
         v-model="model.nome"
         label="Nome *"
         lazy-rules
-        :rules="[(val) => (val && val.length > 0) || 'Please type something']"
+        :rules="[(val) => (val && val.length > 0) || 'Campo obrigatório']"
       />
 
-      <q-input filled type="password" v-model="model.senha" label="Senha *" lazy-rules />
+      <q-input filled type="password" v-model="model.senha" label="Senha *" lazy-rules :rules="[(val) => (val && val.length > 0) || 'Campo obrigatório']"/>
 
-      <div>
-        <q-btn label="Submit" type="button" @click="criar()" color="primary" />
-        <q-btn label="Reset" type="button" @click="reset()" color="primary" flat class="q-ml-sm" />
+      <div class="flex w-full gap-20 justify-between items-center">
+        <q-btn label="Limpar" type="button" @click="reset()" color="secondary" flat />
+        <q-btn label="Cadastrar" type="button" @click="criar()" color="primary" />
       </div>
     </q-form>
   </div>
