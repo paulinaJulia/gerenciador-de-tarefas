@@ -1,9 +1,9 @@
 <template>
   <div class="itemTask">
-    <input type="radio" v-show="false" :checked="isConcluido(props.task.concluida)" />
+    <input type="radio" v-show="false" :checked="isConcluido" />
     <button @click="$emit('click:concluir')" class="cursor-pointer">
       <svg
-        v-show="!isConcluido(props.task.concluida)"
+        v-show="!isConcluido"
         xmlns="http://www.w3.org/2000/svg"
         width="24"
         height="24"
@@ -17,7 +17,7 @@
       </svg>
       <svg
         xmlns="http://www.w3.org/2000/svg"
-        v-show="isConcluido(props.task.concluida)"
+        v-show="isConcluido"
         width="24"
         height="24"
         viewBox="0 0 24 24"
@@ -42,7 +42,7 @@
 
     <div
       class="w-[630px] md:!w-full p-16 flex flex-wrap break-words"
-      :class="isConcluido(props.task.concluida) ? 'line-through' : ''"
+      :class="isConcluido ? 'line-through' : ''"
     >
       <slot name="texto">Texto base</slot>
     </div>
@@ -90,7 +90,7 @@ import useTasks from '../store/tarefas.js'
 import useHabitos from '../store/habitos.js'
 const { getTaskLocalStorage, task: taskActive, } = useTasks()
 const {getHabitoLocalStorage, habito: habitoActive} = useHabitos()
-import { inject } from 'vue'
+import { inject, computed } from 'vue'
 
 const modalCriarTask = inject('modalCriarTask')
 const modalCriarHabito = inject('modalCriarHabito')
@@ -137,13 +137,15 @@ const openVisualizacao = async(id) => {
 }
 }
 
-const isConcluido = (concluida) => {
+
+const isConcluido = computed(() => {
   if (props.modalType === 'habitos') {
-          const hoje = new Date().toISOString().split('T')[0] // Formato YYYY-MM-DD
-     return concluida[hoje]
+   const hoje = new Date().toISOString().split('T')[0] // Formato YYYY-MM-DD
+    console.log(props.task.concluida, hoje)
+     return props.task?.concluida[hoje]
   }
-  return concluida
-}
+  return props.task.concluida
+})
 
 
 const openEditarHabito = async (id) => {

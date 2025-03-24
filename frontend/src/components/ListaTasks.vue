@@ -1,9 +1,10 @@
 <template>
   <div
-    class="flex pr-4 flex-col gap-12 overflow-y-auto overflow-x-hidden max-h-[300px] sm:max-h-[250px] sm:mb-40"
+    class=" pr-4  w-full  !overflow-y-auto overflow-hidden max-h-[400px] sm:max-h-[400px] sm:mb-40"
   >
     <ItemTask
       v-for="dado in dados"
+      class="mt-8"
       :key="dado.id"
       :task="dado"
       @click:excluir="remover(dado)"

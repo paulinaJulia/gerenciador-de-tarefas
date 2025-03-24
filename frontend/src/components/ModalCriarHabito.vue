@@ -44,7 +44,7 @@ import { newHabit } from '../store/habit.store.js'
 
 const edit = ref(false)
 const visualizar = ref(false)
-const { addNewItemHabitos, getHabitosLocalStorage, habito } = inject('habitos')
+const { addNewItemHabitos, getHabitosLocalStorage, habito, getHabitosDoDia, habitos } = inject('habitos')
 // const { task } = useTasks()
 const modalCriarHabito = inject('modalCriarHabito')
 const options = ref([{ value: 'diario', label: 'Diário' },{ value: 'semanal', label: 'Semanal' }, { value: 'mensal', label: 'Mensal' }])
@@ -127,6 +127,8 @@ const criar = () => {
     concluida: {},
     frequencia: newHabit.value.frequencia
   })
+  getHabitosDoDia()
+  console.log({habitos: habitos.value, })
   newHabit.value = {   id: '',
   titulo: '',
   descricao: '',

@@ -62,6 +62,7 @@ export default function useHabitos() {
       habitos.value.splice(index, 1, atualizado)
       console.log(atualizado)
       localStorage.setItem('habitos', JSON.stringify([...habitos.value]))
+      getHabitosDoDia()
     }
   }
 

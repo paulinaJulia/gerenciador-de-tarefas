@@ -30,7 +30,9 @@ const calcularConcluidas = () => {
 }
 
 const calcularHabitosConcluidos = () => {
-  habitos_concluidos.value = habitos.value.filter((item) => item.concluida === true).length
+  const hoje = new Date().toISOString().split('T')[0] // Formato YYYY-MM-DD
+
+  habitos_concluidos.value = habitosDoDia.value.filter((item) => item.concluida[hoje] === true).length
 }
 
 watch(
@@ -43,9 +45,9 @@ watch(
 )
 
 watch(
-  () => [habitos.value],
+  () => [habitos.value, habitosDoDia],
   () => {
-    habitos_criados.value = habitos.value.length
+    habitos_criados.value = habitosDoDia.value.length
     calcularHabitosConcluidos()
   },
   { deep: true },
@@ -62,9 +64,11 @@ const closeModal = () => {
 provide('tasks', { tasks, addNewItemTasks, getTasksLocalStorage, concluir, removeTask, task })
 provide('habitos', {
   habitos,
+  habitosDoDia,
   habito,
   getHabitosLocalStorage,
   removeHabito,
+  getHabitosDoDia,
   concluirHabito,
   addNewItemHabitos,
 })
@@ -251,7 +255,7 @@ const formatValues = (col) => {
 /* Firefox */
 * {
   scrollbar-width: thin;
-  scrollbar-color: #d9d9d9 #8284fa;
+  scrollbar-color: #d9d9d9 #fff;
 }
 
 /* Chrome, Edge, and Safari */
