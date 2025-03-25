@@ -1,5 +1,7 @@
 <template>
-  <div class="flex flex-col p-24  items-center justify-center gap-16 max-w-[40%] sm:max-w-full m-auto h-full overflow-hidden">
+  <div
+    class="flex flex-col p-24 items-center justify-center gap-16 max-w-[40%] sm:max-w-full m-auto h-full overflow-hidden"
+  >
     <img :src="logo" alt="Logo simply+" class="w-[200px] h-[200px]" />
 
     <q-form class="flex flex-col gap-16 w-full">
@@ -21,11 +23,25 @@
         :rules="[(val) => (val && val.length > 0) || 'Campo obrigatório']"
       />
 
-      <q-input class="w-full" filled type="password" v-model="model.senha" label="Senha *" lazy-rules :rules="[(val) => (val && val.length > 0) || 'Campo obrigatório']"/>
+      <q-input
+        class="w-full"
+        filled
+        type="password"
+        v-model="model.senha"
+        label="Senha *"
+        lazy-rules
+        :rules="[(val) => (val && val.length > 0) || 'Campo obrigatório']"
+      />
 
       <div class="flex w-full gap-20 justify-between items-center">
-        <q-btn label="Limpar" type="button" @click="reset()" class="text-secondary" flat />
-        <q-btn label="Cadastrar" type="button" @click="criar()" class="bg-primary-pure text-[#fff]" />
+        <a href="/login" class="underline text-primary-pure"> Entrar</a>
+
+        <q-btn
+          label="Cadastrar"
+          type="button"
+          @click="criar()"
+          class="bg-primary-pure text-[#fff]"
+        />
       </div>
     </q-form>
   </div>
@@ -37,7 +53,6 @@ import useUsuario from '../store/usuario'
 import logo from '../../public/logo.png'
 import { useRouter } from 'vue-router'
 
-
 const router = useRouter()
 const { addNewItemUsuarios } = useUsuario()
 
@@ -45,8 +60,10 @@ const model = ref({ email: '', senha: '', nome: '', data_criacao: '' })
 
 const criar = () => {
   const usuariosList = JSON.parse(localStorage.getItem('usuarios')) || []
-  const userExiste = usuariosList.find(user => user.senha === model.value.senha && user.email === model.value.email)
-  if(userExiste) return
+  const userExiste = usuariosList.find(
+    (user) => user.senha === model.value.senha && user.email === model.value.email,
+  )
+  if (userExiste) return
   localStorage.setItem(
     'usuarios',
     JSON.stringify([
@@ -71,10 +88,8 @@ const criar = () => {
     logado: false,
   })
   model.value = { email: '', senha: '', nome: '', data_criacao: '' }
-  router.push({name:'login'})
+  router.push({ name: 'login' })
 }
 
-const reset = () => {
-  model.value = { email: '', senha: '', nome: '', data_criacao: '' }
-}
+
 </script>
