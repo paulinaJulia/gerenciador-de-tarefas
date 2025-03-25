@@ -46,6 +46,7 @@ const edit = ref(false)
 const visualizar = ref(false)
 const { addNewItemHabitos, getHabitosLocalStorage, habito, getHabitosDoDia, habitos } = inject('habitos')
 // const { task } = useTasks()
+const usuario = inject('usuario_logado')
 const modalCriarHabito = inject('modalCriarHabito')
 const options = ref([{ value: 'diario', label: 'Diário' },{ value: 'semanal', label: 'Semanal' }, { value: 'mensal', label: 'Mensal' }])
 watch(
@@ -95,7 +96,7 @@ const editar = (id) => {
     ]),
   )
   console.log(newHabit.value)
-  getHabitosLocalStorage()
+  getHabitosLocalStorage(usuario.value.id)
   newHabit.value = { id: '', text: '', conluida: false }
   habito.value = {}
 }
@@ -113,7 +114,8 @@ const criar = () => {
         diasSemana: newHabit.value.frequencia === 'semanal' ? ['seg.', 'ter.', 'qua.','qui.', 'sex.', 'sab.', 'dom.'] : null,
         diaMes: newHabit.value.frequencia === 'mensal' ? 15 : null,
         concluida: {},
-        frequencia: newHabit.value.frequencia
+        frequencia: newHabit.value.frequencia,
+        user_id: usuario.value.id
       },
     ]),
   )
@@ -125,9 +127,11 @@ const criar = () => {
     diasSemana: newHabit.value.frequencia === 'semanal' ? ['seg.', 'ter.', 'qua.','qui.', 'sex.', 'sab.', 'dom.'] : null,
     diaMes: newHabit.value.frequencia === 'mensal' ? 15 : null,
     concluida: {},
-    frequencia: newHabit.value.frequencia
+    frequencia: newHabit.value.frequencia,
+        user_id: usuario.value.id
+
   })
-  getHabitosDoDia()
+  getHabitosDoDia(usuario.value.id)
   console.log({habitos: habitos.value, })
   newHabit.value = {   id: '',
   titulo: '',

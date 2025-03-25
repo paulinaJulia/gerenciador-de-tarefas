@@ -3,13 +3,14 @@ import { ref } from 'vue'
 const task = ref({})
 export default function useTasks() {
   const tasks = ref([])
-  const getTasksLocalStorage = () => {
+  const getTasksLocalStorage = (id) => {
     const tasksList = localStorage.getItem('tasks') || []
     if (tasksList.length === 0) {
       tasks.value = []
       return
     }
-    tasks.value = JSON.parse(tasksList)
+    const todasTarefas = JSON.parse(tasksList)
+    tasks.value = todasTarefas.filter((task) => task.user_id === id)
   }
   const getTaskLocalStorage = (id) => {
     // debugger
@@ -31,7 +32,8 @@ export default function useTasks() {
     localStorage.setItem('tasks', JSON.stringify([...tasks.value]))
   }
 
-  const concluir = (task) => {
+  const concluir = (task, id) => {
+    console.log(id)
     const index = tasks.value.findIndex((item) => item.id === task.id)
     if (index >= 0) {
       tasks.value.splice(index, 1, task)

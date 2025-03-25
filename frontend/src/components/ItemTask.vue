@@ -1,5 +1,6 @@
 <template>
   <div class="itemTask">
+    <q-icon name="drag_indicator" class="cursor-move text-gray-300"></q-icon>
     <input type="radio" v-show="false" :checked="isConcluido" />
     <button @click="$emit('click:concluir')" class="cursor-pointer">
       <svg
