@@ -48,7 +48,7 @@
     </div>
 
     <div class="flex gap-8 flex-nowrap">
-      <q-btn class="bg-transparent opt-task border-none shadow-none w-20" icon="more_vert">
+      <q-btn class="bg-transparent opt-task border-none shadow-none w-20 text-gray-400" icon="more_vert">
         <q-menu touch-position>
           <q-list>
             <q-item clickable v-close-popup>
@@ -65,7 +65,7 @@
           </q-list>
         </q-menu>
       </q-btn>
-      <button @click="$emit('click:excluir')" class="hover:text-secondary text-gray-300">
+      <button @click="$emit('click:excluir')" class="hover:text-secondary text-gray-400">
         <svg
           width="24"
           height="24"
