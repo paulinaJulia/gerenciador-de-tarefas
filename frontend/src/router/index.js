@@ -18,7 +18,6 @@ export default defineRouter(function () {
 
   Router.beforeEach((to, from, next) => {
     const isAuth = localStorage.getItem('userToken') !== null
-
     if (to.path === '/' && !isAuth) {
       next('/login') // Redireciona para login se não estiver autenticado
     } else {

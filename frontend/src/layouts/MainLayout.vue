@@ -10,7 +10,10 @@
 
     <q-drawer v-model="leftDrawerOpen" show-if-above bordered>
       <q-list>
-        <q-item-label header> Essential Links </q-item-label>
+        <q-item-label header class="flex items-center justify-center relative bg-primary-pure/5 ">
+          <img alt="Logo simply+" :src="logo" class="h-[100px]">
+          <q-btn @click="leftDrawerOpen = false" class="absolute right-0 top-2" icon="close"></q-btn>
+        </q-item-label>
 
         <EssentialLink v-for="link in linksList" :key="link.title" v-bind="link" />
       </q-list>
@@ -25,6 +28,7 @@
 <script setup>
 import { ref } from 'vue'
 import EssentialLink from 'components/EssentialLink.vue'
+import logo from '../../public/logo.png'
 
 const linksList = [
 

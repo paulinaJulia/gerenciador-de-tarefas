@@ -43,8 +43,8 @@
 <script setup>
 import { ref } from 'vue'
 import useUsuario from '../store/usuario'
-
 import logo from '../../public/logo.png'
+
 const { login } = useUsuario()
 const model = ref({ email: '', senha: '' })
 </script>

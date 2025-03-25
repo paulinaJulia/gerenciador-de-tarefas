@@ -32,7 +32,9 @@ const calcularConcluidas = () => {
 const calcularHabitosConcluidos = () => {
   const hoje = new Date().toISOString().split('T')[0] // Formato YYYY-MM-DD
 
-  habitos_concluidos.value = habitosDoDia.value.filter((item) => item.concluida[hoje] === true).length
+  habitos_concluidos.value = habitosDoDia.value.filter(
+    (item) => item.concluida[hoje] === true,
+  ).length
 }
 
 watch(
@@ -122,12 +124,12 @@ const formatValues = (col) => {
 </script>
 
 <template>
-  <div class="max-h-screen mt-20 overflow-hidden w-full flex flex-col items-center justify-center">
-    <div class="mt-0 max-w-[56rem] w-max md:w-[95vw] pb-40">
+  <div class="max-h-full mt-20 overflow-hidden w-full flex flex-col items-center justify-center">
+    <div class="mt-0 max-w-[56rem] w-max md:w-[95vw] pb-40 h-full">
       <q-tabs
         v-model="tab"
         dense
-        class="text-grey"
+        class="text-gray-400 "
         active-color="primary"
         indicator-color="primary"
         align="justify"
@@ -166,42 +168,42 @@ const formatValues = (col) => {
           <ListaVazia v-else />
         </q-tab-panel>
 
-        <q-tab-panel name="relatorios">
+        <q-tab-panel name="relatorios" class="flex flex-col gap-16">
           <div class="text-h6">Relatórios</div>
           <div class="w-full flex gap-20 items-center">
             <div class="flex flex-col gap-4">
-              <q-card class="p-20 ">
+              <q-card class="p-20">
                 <p>Total de Tarefas</p>
                 <span class="font-semibold text-2xl">{{ tasks_criadas }}</span>
               </q-card>
             </div>
 
-             <div class="flex flex-col gap-4">
-              <q-card class="p-20 ">
+            <div class="flex flex-col gap-16">
+              <q-card class="p-20">
                 <p>Total de Hábitos</p>
                 <span class="font-semibold text-2xl">{{ habitos.length }}</span>
               </q-card>
             </div>
-            <div class="flex flex-col gap-4">
-              <p>Tarefas Concluídas</p>
-              <q-circular-progress
-                show-value
-                font-size="12px"
-                :value="calcularPorcentagem()"
-                size="50px"
-                :thickness="0.22"
-                color="teal"
-                track-color="grey-3"
-                class="q-ma-md"
-              >
-                {{ calcularPorcentagem() + '%' }}
-              </q-circular-progress>
-            </div>
+          </div>
+          <div class="flex flex-col gap-4">
+            <p class="text-lg font-medium">Tarefas Concluídas</p>
+            <q-circular-progress
+              show-value
+              font-size="12px"
+              :value="calcularPorcentagem()"
+              size="50px"
+              :thickness="0.22"
+              color="primary-pure"
+              track-color="grey-3"
+              class="q-ma-md"
+            >
+              {{ calcularPorcentagem() + '%' }}
+            </q-circular-progress>
           </div>
           <div class="flex gap-12 flex-col">
-            <p>Hábitos</p>
+            <p class="text-lg font-medium">Hábitos</p>
             <q-table :rows="habitos" :columns="columns" row-key="name" grid hide-header>
-              <template v-slot:item="props">
+              <template #item="props">
                 <div class="q-pa-xs col-xs-12 col-sm-6 col-md-4 col-lg-3 grid-style-transition">
                   <q-card bordered flat>
                     <q-separator />
@@ -233,11 +235,11 @@ const formatValues = (col) => {
       </q-tab-panels>
 
       <q-page-sticky position="bottom-right" :offset="[40, 40]">
-        <q-fab icon="add" direction="up" color="accent">
-          <q-fab-action @click="openModal()" color="primary" icon="add_task" label="Criar tarefa" />
+        <q-fab icon="add" direction="up" color="primary-pure">
+          <q-fab-action @click="openModal()" color="secondary" icon="add_task" label="Criar tarefa" />
           <q-fab-action
             @click="openModalHabito()"
-            color="primary"
+            color="secondary"
             icon="loop"
             label="Criar hábito"
           />
