@@ -35,7 +35,10 @@
 import { ref } from 'vue'
 import useUsuario from '../store/usuario'
 import logo from '../../public/logo.png'
+import { useRouter } from 'vue-router'
 
+
+const router = useRouter()
 const { addNewItemUsuarios } = useUsuario()
 
 const model = ref({ email: '', senha: '', nome: '', data_criacao: '' })
@@ -68,6 +71,7 @@ const criar = () => {
     logado: false,
   })
   model.value = { email: '', senha: '', nome: '', data_criacao: '' }
+  router.push({name:'login'})
 }
 
 const reset = () => {

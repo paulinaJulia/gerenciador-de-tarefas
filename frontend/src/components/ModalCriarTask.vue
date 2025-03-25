@@ -58,18 +58,17 @@
 <script setup>
 import { inject, watch, ref } from 'vue'
 import { newTask } from '../store/task.store.js'
-import useUsuario from '../store/usuario.js'
 
 
 const edit = ref(false)
 const visualizar = ref(false)
 
-const {usuario} = useUsuario()
 
 const { addNewItemTasks, getTasksLocalStorage, task } = inject('tasks')
 const modalCriarTask = inject('modalCriarTask')
+const usuario = inject('usuario_logado')
 
-
+console.log(usuario)
 
 watch(
   () => modalCriarTask.value.state.open,
@@ -117,7 +116,7 @@ const editar = (id) => {
     ]),
   )
   console.log(newTask.value)
-  getTasksLocalStorage()
+  getTasksLocalStorage(usuario.value?.id)
   newTask.value = { id: '', text: '', conluida: false }
   task.value = {}
 }

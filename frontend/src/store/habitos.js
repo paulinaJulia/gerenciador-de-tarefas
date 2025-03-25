@@ -5,12 +5,12 @@ export default function useHabitos() {
   const habitos = ref([])
   const habitosDoDia = ref([])
 
-  const getHabitosDoDia = () => {
+  const getHabitosDoDia = (id) => {
     const hoje = new Date()
 
     const diaSemana = hoje.toLocaleDateString('pt-BR', { weekday: 'short' }).toLowerCase() // seg, ter, qua...
     const diaMes = hoje.getDate() // Número do dia no mês (1 a 31)
-    getHabitosLocalStorage()
+    getHabitosLocalStorage(id)
     habitosDoDia.value = habitos.value.filter((habito) => {
       if (habito.frequencia === 'diario') return true // Exibir todos os dias
       if (habito.frequencia === 'semanal') return habito.diasSemana.includes(diaSemana)
@@ -18,14 +18,14 @@ export default function useHabitos() {
       return false
     })
   }
-  const getHabitosLocalStorage = () => {
+  const getHabitosLocalStorage = (id) => {
     const habitosList = localStorage.getItem('habitos') || []
     if (habitosList.length === 0) {
       habitos.value = []
       return
     }
-
-    habitos.value = JSON.parse(habitosList)
+    const todosHabitos = JSON.parse(habitosList)
+    habitos.value = todosHabitos.filter((habito) => habito.user_id === id)
   }
   const getHabitoLocalStorage = (id) => {
     const habitosList = localStorage.getItem('habitos') || []
@@ -46,7 +46,7 @@ export default function useHabitos() {
     localStorage.setItem('habitos', JSON.stringify([...habitos.value]))
   }
 
-  const concluirHabito = (task) => {
+  const concluirHabito = (task, id_user) => {
     const index = habitos.value.findIndex((item) => item.id === task.id)
     if (index >= 0) {
       const hoje = new Date().toISOString().split('T')[0] // Formato YYYY-MM-DD
@@ -62,7 +62,7 @@ export default function useHabitos() {
       habitos.value.splice(index, 1, atualizado)
       console.log(atualizado)
       localStorage.setItem('habitos', JSON.stringify([...habitos.value]))
-      getHabitosDoDia()
+      getHabitosDoDia(id_user)
     }
   }
 

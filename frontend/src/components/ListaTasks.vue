@@ -9,7 +9,7 @@
       :key="dado.id"
       :task="dado"
       @click:excluir="remover(dado)"
-      @click:concluir="concluir({ ...dado, concluida: !dado.concluida })"
+      @click:concluir="concluir({ ...dado, concluida: !dado.concluida }, usuario.id)"
     :modal-type="modalType"
     >
       <template #texto>
@@ -20,11 +20,11 @@
 </template>
 
 <script setup>
-import { onMounted } from 'vue'
+import { inject, onMounted } from 'vue'
 import ItemTask from './ItemTask.vue'
 // Default SortableJS
 import Sortable from 'sortablejs'
-
+const usuario = inject('usuario_logado')
 const {dados, remover, concluir, modalType} = defineProps({
   dados: { type: Object, default: () => { } },
   remover: {type: Function, default: () => {}},

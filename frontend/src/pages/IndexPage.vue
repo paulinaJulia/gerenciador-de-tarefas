@@ -7,6 +7,10 @@ import ListaVazia from '../components/ListaVazia.vue'
 import { onMounted, ref, watch, provide } from 'vue'
 import useTasks from '../store/tarefas.js'
 import useHabitos from '../store/habitos.js'
+import useUsuario from '../store/usuario'
+
+
+const { getUsuarioLocalStorage, usuario } = useUsuario()
 
 const tasks_criadas = ref(0)
 const tasks_concluidas = ref(0)
@@ -99,11 +103,13 @@ const closeModalHabito = () => {
 }
 provide('op_modal_habito', { closeModalHabito, openModalHabito })
 provide('modalCriarHabito', modalCriarHabito)
+provide('usuario_logado', usuario)
 
 onMounted(() => {
-  getTasksLocalStorage()
-  getHabitosDoDia()
-  getHabitosLocalStorage()
+  getUsuarioLocalStorage()
+  getTasksLocalStorage(usuario.value?.id)
+  getHabitosDoDia(usuario.value.id)
+  getHabitosLocalStorage(usuario.value.id)
 
   tasks_criadas.value = tasks.value.length
   habitos_criados.value = habitos.value.length
@@ -156,7 +162,6 @@ const formatValues = (col) => {
         </q-tab-panel>
 
         <q-tab-panel name="habitos" class="">
-          <div class="pb-24">Hábitos de hoje</div>
           <ContainerInfo :tasks_concluidas="habitos_concluidos" :tasks_criadas="habitos_criados" />
           <ListaTasks
             v-if="habitos_criados > 0"
