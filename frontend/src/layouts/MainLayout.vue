@@ -32,6 +32,13 @@ import logo from '../../public/logo.png'
 
 const linksList = [
 
+{
+    title: 'Meu perfil',
+    caption: '',
+    icon: 'person',
+    link: '/perfil',
+  },
+
   {
     title: 'Sair',
     caption: '',

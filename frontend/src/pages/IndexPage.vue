@@ -7,7 +7,7 @@ import ListaVazia from '../components/ListaVazia.vue'
 import { onMounted, ref, watch, provide } from 'vue'
 import useTasks from '../store/tasks.store.js'
 import useHabitos from '../store/habitos.store.js'
-import useUsuario from '../store/usuario'
+import useUsuario from '../store/usuario.store.js'
 
 const { getUsuarioLocalStorage, usuario } = useUsuario()
 
