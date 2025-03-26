@@ -12,7 +12,7 @@ export default function useUsuario() {
       return
     }
 
-    usuarios.value = JSON.parse(usuariosList)
+  usuarios.value = JSON.parse(usuariosList)
   }
   const getUsuarioLocalStorage = () => {
     const usuariosList = localStorage.getItem('usuarios') || []

@@ -1,16 +1,15 @@
 import { ref } from 'vue'
 
-const newTask = ref({
+const NEWTASKDEFAULT = {
   id: '',
   titulo: '',
   descricao: '',
   prazo: '',
   data_criacao: '',
   user_id: '',
-  status: '',
   prioridade: '',
-  text: '',
   conluida: false,
-})
+}
+const newTask = ref(NEWTASKDEFAULT)
 
-export { newTask }
+export { NEWTASKDEFAULT, newTask }

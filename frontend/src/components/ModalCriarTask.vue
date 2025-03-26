@@ -57,18 +57,14 @@
 
 <script setup>
 import { inject, watch, ref } from 'vue'
-import { newTask } from '../store/task.store.js'
-
+import { newTask, NEWTASKDEFAULT } from '../store/task.store.js'
 
 const edit = ref(false)
 const visualizar = ref(false)
 
-
 const { addNewItemTasks, getTasksLocalStorage, task } = inject('tasks')
 const modalCriarTask = inject('modalCriarTask')
 const usuario = inject('usuario_logado')
-
-console.log(usuario)
 
 watch(
   () => modalCriarTask.value.state.open,
@@ -94,17 +90,16 @@ watch(
 const fecharModal = () => {
   edit.value = false
   visualizar.value = false
-  newTask.value = { id: '', text: '', conluida: false }
+  newTask.value = NEWTASKDEFAULT
   task.value = {}
   modalCriarTask.value.state.modo = ''
 }
 const editar = (id) => {
-
-  const tasksList = JSON.parse(localStorage.getItem('tasks')) || []
+  const tasksList = JSON.parse(localStorage.getItem('tarefas')) || []
   const tasksListRemovedItem = tasksList.filter((item) => item.id !== id)
   console.log(tasksListRemovedItem, tasksList)
   localStorage.setItem(
-    'tasks',
+    'tarefas',
     JSON.stringify([
       ...tasksListRemovedItem,
       {
@@ -115,37 +110,25 @@ const editar = (id) => {
       },
     ]),
   )
-  console.log(newTask.value)
   getTasksLocalStorage(usuario.value?.id)
-  newTask.value = { id: '', text: '', conluida: false }
+  newTask.value = NEWTASKDEFAULT
   task.value = {}
 }
 
 const criar = () => {
-
-  const tasksList = JSON.parse(localStorage.getItem('tasks')) || []
-  localStorage.setItem(
-    'tasks',
-    JSON.stringify([
-      ...tasksList,
-      {
-        id: tasksList[tasksList.length - 1]?.id + 1 || 1,
-        descricao: newTask.value.descricao,
-        titulo: newTask.value.titulo,
-        concluida: newTask.value.conluida,
-        user_id: usuario.value.id
-      },
-    ]),
-  )
-  console.log(newTask.value)
-  addNewItemTasks({
+  const tasksList = JSON.parse(localStorage.getItem('tarefas')) || []
+  const taskCriar = {
     id: tasksList[tasksList.length - 1]?.id + 1 || 1,
     descricao: newTask.value.descricao,
     titulo: newTask.value.titulo,
-    user_id: usuario.value.id,
     concluida: newTask.value.conluida,
-  })
-  newTask.value = { id: '', text: '', conluida: false }
+    user_id: usuario.value.id,
+    prazo: newTask.value.prazo,
+    data_criacao: new Date().toISOString()
+  }
+  localStorage.setItem('tarefas', JSON.stringify([...tasksList, taskCriar]))
+  addNewItemTasks(taskCriar)
+  newTask.value = NEWTASKDEFAULT
 }
 
 const submit = () => {
@@ -156,5 +139,4 @@ const submit = () => {
   }
 }
 
-console.log(modalCriarTask.value)
 </script>
