@@ -5,10 +5,9 @@ import ModalCriarHabito from '../components/ModalCriarHabito.vue'
 import ContainerInfo from '../components/ContainerInfo.vue'
 import ListaVazia from '../components/ListaVazia.vue'
 import { onMounted, ref, watch, provide } from 'vue'
-import useTasks from '../store/tarefas.js'
-import useHabitos from '../store/habitos.js'
-import useUsuario from '../store/usuario'
-
+import useTasks from '../store/tasks.store.js'
+import useHabitos from '../store/habitos.store.js'
+import useUsuario from '../store/usuario.store.js'
 
 const { getUsuarioLocalStorage, usuario } = useUsuario()
 
@@ -124,8 +123,13 @@ const columns = [
 
 const formatValues = (col) => {
   if (col.name !== 'concluida') return [col.value] // Retorna um array para manter a consistência
-
-  return Object.keys(col?.value) || []
+  let keysValidas = []
+  for (let [key, value] of Object.entries(col.value)) {
+    if (value) {
+      keysValidas.push(key)
+    }
+  }
+  return keysValidas
 }
 </script>
 
@@ -135,7 +139,7 @@ const formatValues = (col) => {
       <q-tabs
         v-model="tab"
         dense
-        class="text-gray-400 "
+        class="text-gray-400"
         active-color="primary"
         indicator-color="primary"
         align="justify"
@@ -241,7 +245,12 @@ const formatValues = (col) => {
 
       <q-page-sticky position="bottom-right" :offset="[40, 40]">
         <q-fab icon="add" direction="up" color="primary-pure">
-          <q-fab-action @click="openModal()" color="secondary" icon="add_task" label="Criar tarefa" />
+          <q-fab-action
+            @click="openModal()"
+            color="secondary"
+            icon="add_task"
+            label="Criar tarefa"
+          />
           <q-fab-action
             @click="openModalHabito()"
             color="secondary"

@@ -1,4 +1,5 @@
 import { ref } from 'vue'
+import Habito from '../models/habito'
 
 const habito = ref({})
 export default function useHabitos() {
@@ -10,6 +11,7 @@ export default function useHabitos() {
 
     const diaSemana = hoje.toLocaleDateString('pt-BR', { weekday: 'short' }).toLowerCase() // seg, ter, qua...
     const diaMes = hoje.getDate() // Número do dia no mês (1 a 31)
+
     getHabitosLocalStorage(id)
     habitosDoDia.value = habitos.value.filter((habito) => {
       if (habito.frequencia === 'diario') return true // Exibir todos os dias
@@ -19,51 +21,33 @@ export default function useHabitos() {
     })
   }
   const getHabitosLocalStorage = (id) => {
-    const habitosList = localStorage.getItem('habitos') || []
+    const habitosList = Habito.buscarTodos()
+
     if (habitosList.length === 0) {
       habitos.value = []
       return
     }
-    const todosHabitos = JSON.parse(habitosList)
-    habitos.value = todosHabitos.filter((habito) => habito.user_id === id)
+    habitos.value = habitosList.filter((habito) => habito.user_id === id)
   }
   const getHabitoLocalStorage = (id) => {
-    const habitosList = localStorage.getItem('habitos') || []
+    const habitosList = Habito.buscarTodos()
     if (habitosList.length === 0) {
       habitos.value = []
       return
     }
-    const habitos = JSON.parse(habitosList)
-    const habitoEcontrado = habitos.find((task) => {
+    const habitoEcontrado = habitosList.find((task) => {
       console.log(task.id, id, 'encontrou')
       return task.id === id
     })
-    console.log(habitoEcontrado)
     habito.value = habitoEcontrado
   }
-  const removeHabito = (task) => {
-    habitos.value = habitos.value.filter((item) => item.id !== task.id)
-    localStorage.setItem('habitos', JSON.stringify([...habitos.value]))
+  const removeHabito = (habito) => {
+    habitos.value = Habito.excluir(habito)
   }
 
   const concluirHabito = (task, id_user) => {
-    const index = habitos.value.findIndex((item) => item.id === task.id)
-    if (index >= 0) {
-      const hoje = new Date().toISOString().split('T')[0] // Formato YYYY-MM-DD
-      const atualizado = { ...habitos.value[index] }
-
-      if (!atualizado.concluida) {
-        atualizado.concluida = {}
-      }
-
-      // Alterna o status do hábito para o dia atual
-      atualizado.concluida[hoje] = !atualizado.concluida[hoje]
-
-      habitos.value.splice(index, 1, atualizado)
-      console.log(atualizado)
-      localStorage.setItem('habitos', JSON.stringify([...habitos.value]))
-      getHabitosDoDia(id_user)
-    }
+    Habito.alterarStatus(task)
+    getHabitosDoDia(id_user)
   }
 
   const addNewItemHabitos = (obj) => {

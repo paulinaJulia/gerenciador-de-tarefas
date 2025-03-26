@@ -42,7 +42,7 @@
 
 <script setup>
 import { ref } from 'vue'
-import useUsuario from '../store/usuario'
+import useUsuario from '../store/usuario.store'
 import logo from '../../public/logo.png'
 
 const { login } = useUsuario()

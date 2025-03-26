@@ -19,7 +19,13 @@
             label="Descrição"
           />
 
-          <q-select emit-value map-options v-model="newHabit.frequencia" :options="options" label="Frequência" />
+          <q-select
+            emit-value
+            map-options
+            v-model="newHabit.frequencia"
+            :options="options"
+            label="Frequência"
+          />
         </q-card-section>
 
         <q-card-actions align="right" class="text-primary">
@@ -40,21 +46,21 @@
 <script setup>
 import { inject, watch, ref } from 'vue'
 import { newHabit } from '../store/habit.store.js'
-// import useTasks from '../store/tarefas.js'
 
 const edit = ref(false)
 const visualizar = ref(false)
-const { addNewItemHabitos, getHabitosLocalStorage, habito, getHabitosDoDia, habitos } = inject('habitos')
-// const { task } = useTasks()
+const { addNewItemHabitos, getHabitosLocalStorage, habito, getHabitosDoDia } = inject('habitos')
 const usuario = inject('usuario_logado')
 const modalCriarHabito = inject('modalCriarHabito')
-const options = ref([{ value: 'diario', label: 'Diário' },{ value: 'semanal', label: 'Semanal' }, { value: 'mensal', label: 'Mensal' }])
+const options = ref([
+  { value: 'diario', label: 'Diário' },
+  // { value: 'semanal', label: 'Semanal' },
+  { value: 'mensal', label: 'Mensal' },
+])
 watch(
   () => modalCriarHabito.value.state.open,
   (v) => {
-    console.log('mudou', modalCriarHabito.value.state.modo)
     if (v) {
-      // debugger
       if (modalCriarHabito.value.state?.modo === 'editar') {
         edit.value = true
         visualizar.value = false
@@ -82,7 +88,6 @@ const fecharModal = () => {
 const editar = (id) => {
   const habitosList = JSON.parse(localStorage.getItem('habitos')) || []
   const habitosListRemovedItem = habitosList.filter((item) => item.id !== id)
-  console.log(habitosListRemovedItem, habitosList)
   localStorage.setItem(
     'habitos',
     JSON.stringify([
@@ -95,7 +100,6 @@ const editar = (id) => {
       },
     ]),
   )
-  console.log(newHabit.value)
   getHabitosLocalStorage(usuario.value.id)
   newHabit.value = { id: '', text: '', conluida: false }
   habito.value = {}
@@ -111,36 +115,41 @@ const criar = () => {
         id: habitosList[habitosList.length - 1]?.id + 1 || 1,
         descricao: newHabit.value.descricao,
         titulo: newHabit.value.titulo,
-        diasSemana: newHabit.value.frequencia === 'semanal' ? ['seg.', 'ter.', 'qua.','qui.', 'sex.', 'sab.', 'dom.'] : null,
-        diaMes: newHabit.value.frequencia === 'mensal' ? 15 : null,
+        diasSemana:
+          newHabit.value.frequencia === 'semanal'
+            ? ['seg.', 'ter.', 'qua.', 'qui.', 'sex.', 'sab.', 'dom.']
+            : null,
+        diaMes: newHabit.value.frequencia === 'mensal' ? 26 : null,
         concluida: {},
         frequencia: newHabit.value.frequencia,
-        user_id: usuario.value.id
+        user_id: usuario.value.id,
       },
     ]),
   )
-  console.log(newHabit.value)
   addNewItemHabitos({
     id: habitosList[habitosList.length - 1]?.id + 1 || 1,
     descricao: newHabit.value.descricao,
     titulo: newHabit.value.titulo,
-    diasSemana: newHabit.value.frequencia === 'semanal' ? ['seg.', 'ter.', 'qua.','qui.', 'sex.', 'sab.', 'dom.'] : null,
-    diaMes: newHabit.value.frequencia === 'mensal' ? 15 : null,
+    diasSemana:
+      newHabit.value.frequencia === 'semanal'
+        ? ['seg.', 'ter.', 'qua.', 'qui.', 'sex.', 'sab.', 'dom.']
+        : null,
+    diaMes: newHabit.value.frequencia === 'mensal' ? 26 : null,
     concluida: {},
     frequencia: newHabit.value.frequencia,
-        user_id: usuario.value.id
-
+    user_id: usuario.value.id,
   })
   getHabitosDoDia(usuario.value.id)
-  console.log({habitos: habitos.value, })
-  newHabit.value = {   id: '',
-  titulo: '',
-  descricao: '',
-  frequencia: '',
-  data_criacao: '',
-  user_id: '',
-  status: '',
-  conluida: {}, }
+  newHabit.value = {
+    id: '',
+    titulo: '',
+    descricao: '',
+    frequencia: '',
+    data_criacao: '',
+    user_id: '',
+    status: '',
+    conluida: {},
+  }
 }
 
 const submit = () => {
@@ -150,6 +159,4 @@ const submit = () => {
     criar()
   }
 }
-
-console.log(modalCriarHabito.value)
 </script>

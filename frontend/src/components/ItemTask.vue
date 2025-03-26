@@ -87,8 +87,8 @@
 </template>
 
 <script setup>
-import useTasks from '../store/tarefas.js'
-import useHabitos from '../store/habitos.js'
+import useTasks from '../store/tasks.store.js'
+import useHabitos from '../store/habitos.store.js'
 const { getTaskLocalStorage, task: taskActive, } = useTasks()
 const {getHabitoLocalStorage, habito: habitoActive} = useHabitos()
 import { inject, computed } from 'vue'
