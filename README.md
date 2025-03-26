@@ -13,3 +13,28 @@ https://www.overleaf.com/read/qsqyjrwhmjkf#3e45ec
 
 > Link do Sonarcloud:
 https://sonarcloud.io/summary/overall?id=paulinaJulia_gerenciador-de-tarefas&branch=main
+
+
+
+## Instalação do projeto:
+
+### Clone o repositório
+```bash
+git clone https://github.com/paulinaJulia/gerenciador-de-tarefas.git
+```
+
+### Entre na pasta frontend 
+```bash
+cd frontend
+```
+
+### Instale as dependências 
+```bash
+bun install
+```
+
+### Inicie a aplicação 
+```bash
+bun dev
+# ou
+quasar dev
